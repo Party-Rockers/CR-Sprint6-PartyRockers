@@ -1,6 +1,6 @@
 variable "default_tags" {
   default = {
-    Name        = "sprint6-cr-partyrockers"
+    Name        = "sprint6-cr-kyle"
     Pod         = "N/A"
     Sprint      = "sprint6"
     Environment = "dev"

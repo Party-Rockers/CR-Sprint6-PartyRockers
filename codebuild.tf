@@ -64,9 +64,18 @@ resource "aws_codebuild_project" "project-with-cache" {
 
   artifacts {
     type           = "S3"
-    namespace_type = "NONE"
+    namespace_type = "BUILD_ID"
     packaging      = "ZIP"
     location       = aws_s3_bucket.deployment.id
+  }
+
+  secondary_artifacts {
+    artifact_identifier = "reports"
+    type                = "S3"
+    namespace_type      = "BUILD_ID"
+    packaging           = "ZIP"
+    location            = aws_s3_bucket.deployment.id
+    name                = "reports"
   }
 
   cache {
