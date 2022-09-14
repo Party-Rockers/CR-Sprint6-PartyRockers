@@ -15,7 +15,7 @@ This is Java code for a simple API that displays a greeting.
 
 ## Pre-requisites
 - [ ] [Maven](https://maven.apache.org/index.html)
-- [ ] [OpenJDK 18](https://openjdk.org/)
+- [ ] [OpenJDK 11](https://openjdk.org/)
 - [ ] IDE ([IntelliJ IDEA](https://www.jetbrains.com/idea/) recommended)
 
 ## Tasks
