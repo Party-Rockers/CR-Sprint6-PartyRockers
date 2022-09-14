@@ -49,24 +49,6 @@ resource "aws_iam_instance_profile" "jenkins" {
 
 #################### WEB SERVER ####################
 
-# create a service role for codedeploy
-resource "aws_iam_role" "codedeploy_service" {
-  name = "${var.default_tags.Name}-codedeploy-service-role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Principal = {
-          Service = "codedeploy.amazonaws.com"
-        }
-      },
-    ]
-  })
-}
-
 # Creates a service role for ec2
 resource "aws_iam_role" "web_ec2" {
   name = "${var.default_tags.Name}-codedeploy-instance-profile"
@@ -83,13 +65,6 @@ resource "aws_iam_role" "web_ec2" {
       },
     ]
   })
-}
-
-# attach AWS managed policy called AWSCodeDeployRole
-# required for deployments which are to an EC2 compute platform
-resource "aws_iam_role_policy_attachment" "codedeploy_role" {
-  role       = aws_iam_role.codedeploy_service.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"
 }
 
 resource "aws_iam_role_policy_attachment" "codedeploy_ec2" {
