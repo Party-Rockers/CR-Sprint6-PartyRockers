@@ -1,0 +1,26 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto11
+  build:
+    commands:
+      - echo Build and testing started on `date`
+      - mvn compile
+      - mvn test
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - mvn package -Dmaven.test.skip
+artifacts:
+  files:
+    - target/api-0.0.1-SNAPSHOT.war
+    - scripts/*
+    - appspec.yml
+  discard-paths: no
+  secondary-artifacts:
+    reports:
+      files:
+        - target/surefire-reports/*.xml
+      discard-paths: yes
