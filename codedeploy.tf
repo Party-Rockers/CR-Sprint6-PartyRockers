@@ -15,12 +15,6 @@ resource "aws_codedeploy_deployment_group" "cd-group" {
     }
   }
 
-#   trigger_configuration {
-#     trigger_events     = ["DeploymentFailure"]
-#     trigger_name       = "example-trigger"
-#     trigger_target_arn = aws_sns_topic.example.arn
-#   }
-
   auto_rollback_configuration {
     enabled = true
     events  = ["DEPLOYMENT_FAILURE"]
