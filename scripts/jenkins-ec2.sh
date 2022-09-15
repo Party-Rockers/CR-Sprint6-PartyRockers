@@ -2,7 +2,6 @@
 sudo apt update -y
 sudo apt upgrade -y
 sudp apt install wget -y
-sudo apt install iptables-persistent -y
 
 # Install Docker
 sudo apt-get install \
@@ -46,6 +45,10 @@ sudo systemctl enable jenkins.service
 sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
 
 # Save iptables rules
+echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections
+echo iptables-persistent iptables-persistent/autosave_v6 boolean true | sudo debconf-set-selections
+sudo apt-get -y install iptables-persistent
+
 sudo iptables-save > /etc/iptables/rules.v4
 sudo ip6tables-save > /etc/iptables/rules.v6
 
