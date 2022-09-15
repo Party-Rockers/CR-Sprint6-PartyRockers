@@ -1,7 +1,7 @@
 variable "default_tags" {
   default = {
-    Name        = "sprint6-cr-kyle"
-    Pod         = "N/A"
+    Name        = "sprint6-cr-partyrockers"
+    Pod         = "PartyRockers"
     Sprint      = "sprint6"
     Environment = "dev"
   }
@@ -12,6 +12,8 @@ variable "allowed_cidr_blocks" {
   type = list(string)
   default = [
     "174.103.114.161/32", # Kyle
+    "73.126.4.151/32", # Sarah
+    "76.16.219.156/32", # Maya
 
     # Github
     "192.30.252.0/22",
