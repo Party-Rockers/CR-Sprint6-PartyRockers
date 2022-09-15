@@ -45,6 +45,10 @@ sudo systemctl enable jenkins.service
 # Map port 80 to port 8080
 sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
 
+# Save iptables rules
+sudo iptables-save > /etc/iptables/rules.v4
+sudo ip6tables-save > /etc/iptables/rules.v6
+
 # Add Jenkins user to Docker group
 sudo usermod -a -G docker jenkins
 
