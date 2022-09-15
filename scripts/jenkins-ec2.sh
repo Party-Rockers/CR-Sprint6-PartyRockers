@@ -2,6 +2,7 @@
 sudo apt update -y
 sudo apt upgrade -y
 sudp apt install wget -y
+sudo apt install iptables-persistent -y
 
 # Install Docker
 sudo apt-get install \
