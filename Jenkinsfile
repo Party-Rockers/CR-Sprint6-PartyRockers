@@ -1,13 +1,19 @@
 pipeline {
-    agent none
+    agent {
+        docker {
+            image 'maven:3.8.4-eclipse-temurin-11'
+            args '-v /root/.m2:/root/.m2'
+        }
+    }
+
     stages {
         stage('Build') {
-            steps {
 
+            steps {
                echo 'This is the build stage.'
                awsCodeBuild projectName: "${APPLICATION_NAME}-codebuild", credentialsType: 'keys', region: "${AWS_REGION}", sourceControlType: 'project', sourceVersion: "${BRANCH_NAME}"
-
             }
+
         }
 
         // stage('Testing') {
