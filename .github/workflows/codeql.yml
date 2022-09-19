@@ -59,38 +59,45 @@ jobs:
     - name: Archive test artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: Surefire Reports
+        name: surefire-reports
         path: |
           target/surefire-reports/*.xml
 
     - name: Archive deployment artifact
       uses: actions/upload-artifact@v3
       with:
-        name: Packaged API
+        name: packaged-api
         path: |
           target/*.war
           appspec.yml
           scripts/application_start.sh
           scripts/before_install.sh
 
-  # cd:
-  #   name: Deployment
-  #   needs: ci
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Configure AWS credentials
-  #       uses: aws-actions/configure-aws-credentials@v1
-  #       with:
-  #         aws-access-key-id:${{ secrets.AWS_ACCESS_KEY_ID }}
-  #         aws-secret-access-key:${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #         aws-region: us-east-2
-  #     - name: Retrieve Artifact
-  #       uses: actions/download-artifact@v3
-  #       with:
-  #         name: Packaged API
-  #     - name: Upload to AWS S3
-  #       run: |
-  #         aws s3api put-object \
-  #           --bucket ${{ secrets.BUCKET }} \
-  #           --key dir-1/big-video-file.mp4 \
-  #           --body e:\media\videos\f-sharp-3-data-services.mp4
+  cd:
+    name: Deployment
+    needs: ci
+    runs-on: ubuntu-latest
+    steps:
+      - name: Retrieve Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: packaged-api
+          path: artifacts
+
+      - name: Prepare Artifact for S3 Upload
+        run: |
+          zip -r artifacts.zip artifacts
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id:${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key:${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region:us-east-2
+
+      - name: Upload to AWS S3
+        run: |
+          aws s3api put-object \
+            --bucket ${{ secrets.BUCKET }} \
+            --key $GITHUB_SHA.zip \
+            --body artifacts.zip
