@@ -9,8 +9,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'This is the build stage.'
-                
+                echo 'Building the application...'
                 script {
                     results = awsCodeBuild( 
                         projectName: "${CODEBUILD_NAME}", 
@@ -19,45 +18,39 @@ pipeline {
                         sourceControlType: 'project', 
                         sourceVersion: "${BRANCH_NAME}" 
                     )
-
-                    echo results.getArtifactsLocation()
                     s3Bucket = results.getArtifactsLocation().split(":::")[1].split("/")[0]
                     s3Prefix = results.getArtifactsLocation().split("/")[1]
-                    s3Key    = "${s3Prefix}/${CODEBUILD_NAME}"
+                    s3PrimaryKey = "${s3Prefix}/${CODEBUILD_NAME}"
+                    s3ReportKey = "${s3Prefix}/reports"
                 }
             }
         }
-
-        // stage('Testing') {
-        //     steps {
-        //        echo 'This is the test stage.'
-        //     }
-        // }
-
-        // stage('E2E Testing') {
-        //     steps {
-
-        //        echo 'This is the E2E Testing stage.'
-        //     }
-        // }
-        
+        stage('Test') {
+            steps {
+                echo 'Testing the application...'
+                withAWS(region: "${AWS_REGION}") {
+                    s3Download(bucket: "${s3Bucket}", path: "${s3ReportKey}", file: "reports.zip")
+                    unzip zipFile: "reports.zip", dir: "reports"
+                    junit "reports/*.xml"
+                }
+            }
+        }
         stage('Deploy') {
             steps {
-                echo 'This is the deploy stage.'
-                
+                echo 'Deploying the application...'
                 withAWS( region: "${AWS_REGION}"){
                     createDeployment(
                         s3Bucket: "${s3Bucket}",
-                        s3Key: "${s3Key}",
-                        s3BundleType: 'zip', // [Valid values: tar | tgz | zip | YAML | JSON]
+                        s3Key: "${s3PrimaryKey}",
+                        s3BundleType: 'zip',
                         applicationName: "${CODEDEPLOY_NAME}",
                         deploymentGroupName: "${DEPLOYMENT_GROUP_NAME}",
                         deploymentConfigName: 'CodeDeployDefault.AllAtOnce',
                         description: 'Test deploy',
                         waitForCompletion: 'true'
                     )
-                } // withAWS
-            } // steps
+                }
+            }
         }
     }
 }
