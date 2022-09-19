@@ -5,7 +5,7 @@ pipeline {
             steps {
 
                echo 'This is the build stage.'
-               awsCodeBuild projectName: "${APPLICATION_NAME}-codebuild", credentialsType: 'keys', region: "${AWS_REGION}", sourceControlType: 'project', sourceVersion: "${GIT_COMMIT}"
+               awsCodeBuild projectName: "${APPLICATION_NAME}-codebuild", credentialsType: 'keys', region: "${AWS_REGION}", sourceControlType: 'project', sourceVersion: "${BRANCH_NAME}"
 
             }
         }
