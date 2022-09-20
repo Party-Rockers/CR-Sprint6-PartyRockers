@@ -89,8 +89,10 @@ jobs:
           zip -r artifacts.zip artifacts
 
       - name: Upload to AWS S3
+        env:
+          BUCKET: ${{ secrets.BUCKET }}
         run: |
           aws s3api put-object \
-            --bucket ${{ secrets.BUCKET }} \
+            --bucket "$BUCKET" \
             --key $GITHUB_SHA.zip \
             --body artifacts.zip
