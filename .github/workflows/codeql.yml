@@ -94,5 +94,17 @@ jobs:
         run: |
           aws s3api put-object \
             --bucket "$BUCKET" \
-            --key $GITHUB_SHA.zip \
+            --key "artifacts/$GITHUB_SHA.zip" \
             --body artifacts.zip
+
+      - name: Trigger Deploy
+        env:
+          APPLICATION_NAME : ${{ secrets.APPLICATION_NAME }}
+          DEPLOYMENT_GROUP: ${{ secrets.DEPLOYMENT_GROUP }}
+          BUCKET: ${{ secrets.BUCKET }}
+        run: |
+          aws deploy create-deployment \
+            --application-name $APPLICATION_NAME
+            --deployment-config-name CodeDeployDefault.OneAtATime
+            --deployment-group-name $DEPLOYMENT_GROUP
+            --s3-location bucket=$BUCKET,bundleType=zip,key=artifacts/$GITHUB_SHA.zip
