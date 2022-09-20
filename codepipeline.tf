@@ -1,3 +1,8 @@
+resource "aws_codestarconnections_connection" "codestar" {
+  name          = "sprint6-cr-partyrockers"
+  provider_type = "GitHub"
+}
+
 resource "aws_codepipeline" "codepipeline" {
   name     = "${var.default_tags.Name}"
   
@@ -14,16 +19,15 @@ resource "aws_codepipeline" "codepipeline" {
     action {
       name             = "Source"
       category         = "Source"
-      owner            = "ThirdParty"
-      provider         = "GitHub"
+      owner            = "AWS"
+      provider         = "CodeStarSourceConnection"
       version          = "1"
       output_artifacts = ["source_output"]
 
       configuration = {
-        Owner      = "Party-Rockers"
-        Repo       = "CR-Sprint6-PartyRockers"
-        Branch     = "feature/aws-pipeline"
-        OAuthToken = ""
+        ConnectionArn    = aws_codestarconnections_connection.codestar.arn
+        FullRepositoryId = "Party-Rockers/CR-Sprint6-PartyRockers"
+        BranchName       = "main"
       }
     }
   }
@@ -59,7 +63,7 @@ resource "aws_codepipeline" "codepipeline" {
 
       configuration = {
         ApplicationName     = aws_codedeploy_app.cd.name
-        DeploymentGroupName = aws_codedeploy_deployment_group.cd-group.id
+        DeploymentGroupName = aws_codedeploy_deployment_group.cd-group.deployment_group_name
       }
     }
   }

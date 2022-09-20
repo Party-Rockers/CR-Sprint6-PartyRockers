@@ -159,6 +159,24 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
         "codebuild:StartBuild"
       ],
       "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "codestar-connections:UseConnection"
+      ],
+      "Resource": "${aws_codestarconnections_connection.codestar.arn}"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "codedeploy:*"
+      ],
+      "Resource": [
+        "${aws_codedeploy_deployment_group.cd-group.arn}",
+        "arn:aws:codedeploy:*:687391720917:deploymentconfig:*",
+        "${aws_codedeploy_app.cd.arn}"
+      ]
     }
   ]
 }
