@@ -13,19 +13,12 @@ resource "aws_codebuild_project" "cb" {
   }
 
   secondary_artifacts {
-
     artifact_identifier = "reports"
-
     type           = "S3"
-
     namespace_type = "BUILD_ID"
-
     packaging      = "ZIP"
-
     location       = aws_s3_bucket.code-build-output.id
-
     name           = "reports"
-
   }
 
   environment {
@@ -33,8 +26,6 @@ resource "aws_codebuild_project" "cb" {
     image                       = "aws/codebuild/standard:4.0"
     type                        = "LINUX_CONTAINER"
     image_pull_credentials_type = "CODEBUILD"
-
-
   }
 
   source {
