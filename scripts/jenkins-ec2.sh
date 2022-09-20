@@ -2,6 +2,8 @@
 sudo apt update -y
 sudo apt upgrade -y
 sudp apt install wget -y
+sudo apt install awscli -y
+sudo apt install zip -y
 
 # Install Docker
 sudo apt-get install \
