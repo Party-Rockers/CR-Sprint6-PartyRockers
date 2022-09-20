@@ -8,7 +8,7 @@ terraform {
   backend "s3" {
     dynamodb_table = "sprint6-cr-partyrockers-remote"
     bucket         = "sprint6-cr-partyrockers-remote"
-    key            = "network/terraform.tfstate"
+    key            = "network/terraform-aws-pipeline.tfstate"
     region         = "us-east-2"
   }
   required_version = ">= 1.2.0"

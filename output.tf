@@ -1,7 +1,7 @@
 ###################### OUTPUT ######################
 
 output "ssh_command" {
-  value = "ssh -A -i key.pem ubuntu@${aws_instance.jenkins.public_dns}"
+  value = "ssh -A -i key.pem ubuntu@${aws_instance.web.public_dns}"
 }
 
 output "create_private_key_command" {
