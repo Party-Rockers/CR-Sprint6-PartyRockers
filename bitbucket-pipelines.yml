@@ -1,10 +1,3 @@
-#  Template maven-build
-
-#  This template allows you to test and build your Java project with Maven.
-#  The workflow allows running tests, code checkstyle and security scans on the default branch.
-
-# Prerequisites: pom.xml and appropriate project structure should exist in the repository.
-
 image: maven:3.6.3
 
 pipelines:
@@ -17,23 +10,35 @@ pipelines:
           script:
             - mvn -B verify --file pom.xml
           after-script:
-              # Collect checkstyle results, if any, and convert to Bitbucket Code Insights.
             - pipe: atlassian/checkstyle-report:0.3.0
+          artifacts:
+            - target/*.war
       - step:
           name: Security Scan
           script:
-            # Run a security scan for sensitive data.
-            # See more security tools at https://bitbucket.org/product/features/pipelines/integrations?&category=security
             - pipe: atlassian/git-secrets-scan:0.5.1
             
-            # Example
-            
     - step:
+        name: Deploy
         runs-on:
           - self.hosted
-          #this is the command that literally ruined my f-ing life 
           - linux.shell
         script:
-          - aws s3 ls
+          - mkdir artifacts
+          - mkdir artifacts/target
+          - cp -R scripts artifacts
+          - cp target/*war artifacts/target
+          - cp appspec.yml artifacts
+          - zip -r artifacts.zip artifacts
           
-          # Example
+          - aws s3api put-object
+            --bucket "$BUCKET"
+            --key "artifacts/$BITBUCKET_COMMIT.zip"
+            --body artifacts.zip
+
+          - aws deploy create-deployment
+            --region us-east-2
+            --application-name $APPLICATION_NAME
+            --deployment-config-name CodeDeployDefault.OneAtATime
+            --deployment-group-name $DEPLOYMENT_GROUP
+            --s3-location bucket=$BUCKET,bundleType=zip,key=artifacts/$BITBUCKET_COMMIT.zip
