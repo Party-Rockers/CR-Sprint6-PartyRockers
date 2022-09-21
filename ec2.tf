@@ -83,3 +83,51 @@ resource "aws_instance" "web" {
     { Name = "${var.default_tags.Name}-web" }
   )
 }
+
+###################### GITHUB WEB Server ######################
+
+resource "aws_instance" "github-web" {
+  ami                  = data.aws_ami.ubuntu_web.id
+  instance_type        = "t3.micro"
+  subnet_id            = aws_subnet.public.id
+  security_groups      = [aws_security_group.web.id]
+  iam_instance_profile = aws_iam_instance_profile.codedeploy.name
+  key_name             = aws_key_pair.default.key_name
+  user_data            = file("scripts/web-ec2.sh")
+
+  lifecycle {
+    ignore_changes = [
+      disable_api_termination, ebs_optimized, hibernation, security_groups,
+      credit_specification, network_interface, ephemeral_block_device
+    ]
+  }
+
+  tags = merge(
+    var.default_tags,
+    { Name = "${var.default_tags.Name}-github-web" }
+  )
+}
+
+###################### BITBUCKET WEB Server ######################
+
+resource "aws_instance" "bitbucket-web" {
+  ami                  = data.aws_ami.ubuntu_web.id
+  instance_type        = "t3.micro"
+  subnet_id            = aws_subnet.public.id
+  security_groups      = [aws_security_group.web.id]
+  iam_instance_profile = aws_iam_instance_profile.codedeploy.name
+  key_name             = aws_key_pair.default.key_name
+  user_data            = file("scripts/web-ec2.sh")
+
+  lifecycle {
+    ignore_changes = [
+      disable_api_termination, ebs_optimized, hibernation, security_groups,
+      credit_specification, network_interface, ephemeral_block_device
+    ]
+  }
+
+  tags = merge(
+    var.default_tags,
+    { Name = "${var.default_tags.Name}-bitbucket-web" }
+  )
+}
