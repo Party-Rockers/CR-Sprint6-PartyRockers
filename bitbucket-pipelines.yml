@@ -25,3 +25,14 @@ pipelines:
             # Run a security scan for sensitive data.
             # See more security tools at https://bitbucket.org/product/features/pipelines/integrations?&category=security
             - pipe: atlassian/git-secrets-scan:0.5.1
+            
+            # Example
+
+    - step:
+        runs-on:
+          - self.hosted
+          - linux
+        script:
+          - aws s3 ls
+          
+          # Example
