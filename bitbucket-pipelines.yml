@@ -31,7 +31,6 @@ pipelines:
     - step:
         runs-on:
           - self.hosted
-          - linux
         script:
           - aws s3 ls
           
