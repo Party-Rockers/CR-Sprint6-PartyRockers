@@ -27,10 +27,11 @@ pipelines:
             - pipe: atlassian/git-secrets-scan:0.5.1
             
             # Example
-
+            
     - step:
         runs-on:
           - self.hosted
+          #this is the command that literally ruined my f-ing life 
           - linux.shell
         script:
           - aws s3 ls
