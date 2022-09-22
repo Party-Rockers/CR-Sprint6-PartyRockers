@@ -16,8 +16,8 @@ public class CalculatorControllerTest {
 
     @Test
     public void getCalculator() throws Exception {
-        ResponseEntity<String> response = template.getForEntity("/calculator?number1=7&number2=2", String.class);
-        assertThat(response.getBody()).isEqualTo("{\"id\":1,\"content\":\"The total is: 9!\"}");
+        ResponseEntity<String> response = template.getForEntity("/calculator?number1=8&number2=2", String.class);
+        assertThat(response.getBody()).isEqualTo("{\"id\":1,\"content\":\"The total is: 10!\"}");
     }
     @Test
     public void getCalculatorDefault() throws Exception {
