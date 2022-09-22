@@ -7,7 +7,6 @@ current_branch=$(git rev-parse --abbrev-ref HEAD)
 push_branch_origin=(
     "origin:main"
     "origin:feature/github-pipeline"
-    "origin:feature/aws-pipeline"
     "bitbucket:main"
 )
 
@@ -50,16 +49,22 @@ for remote_branch in "${push_branch_origin[@]}"; do
     remote=${remote_branch%:*}
     branch=${remote_branch#*:}
 
-    random_number=$(( ( RANDOM % 100000000 )  + 1 ))
-    git checkout -b $random_number "$remote"/"$branch"
-    git cherry-pick "$current_branch" -m 1
+    if [ "$branch" == "$current_branch" ]; then
+        echo "Pushing to $remote/$branch..."
+        git push $remote $branch
+    else
+        echo "Pushing to $remote/$branch..."
+        random_number=$(( ( RANDOM % 100000000 )  + 1 ))
+        git checkout -b $random_number "$remote"/"$branch"
+        git cherry-pick "$current_branch"
 
-    echo "Pushing to $remote/$branch..."
-    git push "$remote" "$random_number":"$branch"
-    echo "Pushed to $remote/$branch!"
+        echo "Pushing to $remote/$branch..."
+        git push "$remote" "$random_number":"$branch"
+        echo "Pushed to $remote/$branch!"
 
-    git checkout "$current_branch"
-    git branch -D $random_number
+        git checkout "$current_branch"
+        git branch -D $random_number
+    fi
 done
 
 echo
