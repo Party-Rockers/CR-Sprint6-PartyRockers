@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class CalculatorController {
-
+    //Code for an API that adds two numbers
     private static final String template = "The total is: %s!";
     private final AtomicLong counter = new AtomicLong();
 
