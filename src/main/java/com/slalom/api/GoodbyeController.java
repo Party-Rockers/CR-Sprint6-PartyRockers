@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+// Our goodbye API
 @RestController
 public class GoodbyeController {
-
     private static final String template = "Goodbye, %s!";
     private final AtomicLong counter = new AtomicLong();
 
